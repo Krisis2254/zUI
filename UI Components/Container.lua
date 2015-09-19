@@ -1,5 +1,5 @@
-require"zUI/BaseUI"
-require"zUI/Mouse"
+require("zUI/BaseUI")
+require("zUI/Color")
 --Container Class Setup
 Container = {}
 Container.__index = Container
@@ -40,10 +40,10 @@ function Container:draw()
 		end
 		self.x=self.ox+self.ofx self.y=self.oy+self.ofy
 		if self.hasBackground then
-		love.graphics.setColor(self.bgColor)
+		love.graphics.setColor(self.bgColor:toRGBA():unpack())
 			love.graphics.polygon("fill",self.x,self.y,self.x+self.width,self.y,self.x+self.width,self.y+self.height,self.x,self.y+self.height)
 		end if self.hasBorder then
-		love.graphics.setColor(self.borderColor)
+		love.graphics.setColor(self.borderColor:toRGBA():unpack())
 			love.graphics.polygon("line", self.x,self.y,self.x+self.width,self.y,self.x+self.width,self.y+self.height,self.x,self.y+self.height)
 		end
 		for _,v in ipairs(self.uiComps) do
@@ -60,10 +60,10 @@ function Container:addTo(parent)
 end
 
 function Container:update()
-	local flag = false 
+	local flag = false
 	if self.displayed then
 		flag = true
-		if self.parent~={} or self.parent~=nil then
+		if type(self.parent)==nil then
 			if self.parent.displayed then
 				flag = true
 			else
@@ -89,7 +89,7 @@ function Container:update()
 		if not self.exited then
 			if self.m.x<self.x or self.m.x>self.x+self.width or self.m.y<self.y or self.m.y>self.y+self.height then
 				self.exited = true
-				if self.onexitactive then	
+				if self.onexitactive then
 					self.onexit(self.m.x,self.m.y)
 				end
 			end
@@ -140,4 +140,3 @@ function Container.__tostring(c)
 	end
 	return str..tostring(c.uiComps[#c.uiComps]).."})"
 end
-

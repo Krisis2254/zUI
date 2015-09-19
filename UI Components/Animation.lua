@@ -1,4 +1,4 @@
-require"zUI/Image"
+require("zUI/Image")
 
 Animation = {}
 Animation.__index = Animation
@@ -64,10 +64,10 @@ function Animation:draw()
 end
 
 function Animation:update()
-	local flag = false 
+	local flag = false
 	if self.displayed then
 		flag = true
-		if self.parent~=nil then
+		if type(self.parent)~=nil then
 			if self.parent.displayed then
 				flag = true
 			else
@@ -82,7 +82,7 @@ function Animation:update()
 			if self.drawform=="norm" then
 				self.animationdirection = 1
 				if self.frame>=#self.imgs then
-					self.frame = 0 
+					self.frame = 0
 				end
 			elseif self.drawform=="fab" then
 				if self.frame>=#self.imgs then
@@ -114,7 +114,7 @@ function Animation:update()
 		if not self.exited then
 			if self.m.x<self.x or self.m.x>self.x+self.width or self.m.y<self.y or self.m.y>self.y+self.height then
 				self.exited = true
-				if self.onexitactive then	
+				if self.onexitactive then
 					self.onexit(self.m.x,self.m.y)
 				end
 			end

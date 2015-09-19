@@ -1,5 +1,5 @@
-require"zUI/BaseUI"
-require"zUI/Mouse"
+require("zUI/BaseUI")
+require("zUI/Color")
 Image = {}
 Image.__index = Image
 setmetatable(Image, {__index = BaseUI,__call = function(_,...) return Image.new(...) end})
@@ -46,10 +46,10 @@ function Image:draw()
 		end
 		self.x=self.ox+self.ofx self.y=self.oy+self.ofy
 		if self.hasBackground then
-		love.graphics.setColor(self.bgColor)
+		love.graphics.setColor(self.bgColor:toRGBA():unpack())
 			love.graphics.polygon("fill",self.x,self.y,self.x+(self.width*self.sx),self.y,self.x+(self.width*self.sx),self.y+(self.height*self.sy),self.x,self.y+(self.height*self.sy))
 		end if self.hasBorder then
-		love.graphics.setColor(self.borderColor)
+		love.graphics.setColor(self.borderColor:toRGBA():unpack())
 			love.graphics.polygon("line",self.x,self.y,self.x+(self.width*self.sx),self.y,self.x+(self.width*self.sx),self.y+(self.height*self.sy),self.x,self.y+(self.height*self.sy))
 		end
 		love.graphics.setColor(255,255,255,255)
@@ -65,10 +65,10 @@ function Image:addTo(parent)
 end
 
 function Image:update()
-	local flag = false 
+	local flag = false
 	if self.displayed then
 		flag = true
-		if self.parent~=nil then
+		if type(self.parent)~=nil then
 			if self.parent.displayed then
 				flag = true
 			else
@@ -94,7 +94,7 @@ function Image:update()
 		if not self.exited then
 			if self.m.x<self.x or self.m.x>self.x+(self.width*self.sx) or self.m.y<self.y or self.m.y>self.y+(self.height*self.sy) then
 				self.exited = true
-				if self.onexitactive then	
+				if self.onexitactive then
 					self.onexit(self.m.x,self.m.y)
 				end
 			end
@@ -109,9 +109,6 @@ function Image:update()
 		end
 		--Click
 		if self.clicked then
-			if self.onclickactive then
-				self.onclick(self.m.x,self.m.y,self.m.b)
-			end
 			self.curTime = self.curTime+love.timer.getDelta()
 			if self.curTime>=self.clickTime then
 				self.curTime = 0

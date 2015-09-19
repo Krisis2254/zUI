@@ -1,4 +1,5 @@
-require"zUI/BaseUI"
+require("zUI/BaseUI")
+require("zUI/Color")
 --Textlabel Class Setup
 TextLabel = {}
 TextLabel.__index = TextLabel
@@ -14,7 +15,7 @@ function TextLabel.new(x,y,width,height,text,centered,font,bgColor,textColor,bor
 		height = font:getHeight()
 		afith = true
 	else afith = false end
-	
+
 	local base = BaseUI.new(x,y,width,height,bgColor,textColor,borderColor,displayed)
 	base.type = "TextLabel"
 	base.text = text
@@ -56,13 +57,13 @@ function TextLabel:draw()
 		end
 		self.x=self.ox+self.ofx self.y=self.oy+self.ofy
 		if self.hasBackground then
-		love.graphics.setColor(self.bgColor)
+		love.graphics.setColor(self.bgColor:toRGBA():unpack())
 			love.graphics.polygon("fill",self.x,self.y,self.x+self.width,self.y,self.x+self.width,self.y+self.height,self.x,self.y+self.height)
 		end if self.hasBorder then
-		love.graphics.setColor(self.borderColor)
+		love.graphics.setColor(self.borderColor:toRGBA():unpack())
 			love.graphics.polygon("line", self.x,self.y,self.x+self.width,self.y,self.x+self.width,self.y+self.height,self.x,self.y+self.height)
 		end
-		love.graphics.setColor(self.textColor)
+		love.graphics.setColor(self.textColor:toRGBA():unpack())
 		love.graphics.setFont(self.fontData.font)
 			if self.fontData.centered then
 				love.graphics.printf(self.text,self.x,((self.height/2)-(self.fontData.hSize/2))+self.y,self.width,"center")
@@ -81,10 +82,10 @@ function TextLabel:addTo(parent)
 end
 
 function TextLabel:update()
-	local flag = false 
+	local flag = false
 	if self.displayed then
 		flag = true
-		if self.parent~=nil then
+		if type(self.parent)~=nil then
 			if self.parent.displayed then
 				flag = true
 			else
@@ -110,7 +111,7 @@ function TextLabel:update()
 		if not self.exited then
 			if self.m.x<self.x or self.m.x>self.x+self.width or self.m.y<self.y or self.m.y>self.y+self.height then
 				self.exited = true
-				if self.onexitactive then	
+				if self.onexitactive then
 					self.onexit(self.m.x,self.m.y)
 				end
 			end
