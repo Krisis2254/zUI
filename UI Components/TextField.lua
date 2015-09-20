@@ -43,13 +43,13 @@ function TextField.new(x,y,width,height,centered,maxLength,font,bgColor,textColo
 				end
 			end
 		end)
-		base.borderColor = {150,150,150,255}
+		base.borderColor = rgb(150,150,150)
 	end
 		base.onenteractive = false
 		base.entered = false
 	base.onexit = function(x,y)
 		beholder.stopObserving(base.keyid)
-		base.borderColor = {175,175,175,255}
+		base.borderColor = rgb(175,175,175)
 	end
 		base.onexitactive = false
 		base.exited = false

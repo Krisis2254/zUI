@@ -8,6 +8,7 @@ math.round = function(a)
         return math.floor(a)
     end
 end
+
 rgb = {}
     rgb.__index = rgb
     setmetatable(rgb, {__index = colorbase, __call = function(_,...) return rgb.new(...) end})
