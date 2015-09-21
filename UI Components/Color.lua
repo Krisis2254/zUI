@@ -146,19 +146,19 @@ end
 
 function colorbase:shade(percent)
     local t = self.type
-    self=self:toHsv()
-    self.v=self.v+percent self.v=self.v>1 and 1 or self.v self.v=self.v<0 and 0 or self.v
-    if t=="rgb" then return self:toRGB() elseif t=="rgba" then return self:toRGBA() elseif t=="hex" then return self:toHex() elseif t=="hsl" then return self:toHsl() elseif t=="hsv" then return self end
+    c=self:toHsv()
+    c.v=c.v+percent c.v=c.v>1 and 1 or c.v c.v=c.v<0 and 0 or c.v
+    if t=="rgb" then return c:toRGB() elseif t=="rgba" then return c:toRGBA() elseif t=="hex" then return c:toHex() elseif t=="hsl" then return c:toHsl() elseif t=="hsv" then return c end
 end
 
 function colorbase:hueshift(degrees)
     local t = self.type
-    self=self:toHsv()
-    self.h=self.h*360
-    self.h=self.h+degrees
-    self.h = (self.h+360)%360
-    self.h=self.h/360
-    if t=="rgb" then return self:toRGB() elseif t=="rgba" then return self:toRGBA() elseif t=="hex" then return self:toHex() elseif t=="hsl" then return self:toHsl() elseif t=="hsv" then return self end
+    c=self:toHsv()
+    c.h=c.h*360
+    c.h=c.h+degrees
+    c.h = (c.h+360)%360
+    c.h=c.h/360
+    if t=="rgb" then return c:toRGB() elseif t=="rgba" then return c:toRGBA() elseif t=="hex" then return c:toHex() elseif t=="hsl" then return c:toHsl() elseif t=="hsv" then return c end
 end
 
 function colorbase:mix(color,amount)
@@ -169,7 +169,7 @@ function colorbase:mix(color,amount)
     r = math.sqrt( (1-amount)*(c1.r^2)+(amount*(c2.r^2)) )
     g = math.sqrt( (1-amount)*(c1.g^2)+(amount*(c2.g^2)) )
     b = math.sqrt( (1-amount)*(c1.b^2)+(amount*(c2.b^2)) )
-    a = (1-amount)*a+amount*b
+    a = (1-amount)*c1.a+amount*c2.a
     if t=="rgb" then return rgb.new(r,g,b) elseif t=="rgba" then return rgba.new(r,g,b,a) elseif t=="hex" then return rgba.new(r,g,b,a):toHex() elseif t=="hsl" then rgba.new(r,g,b,a):toHsl() elseif t=="hsv" then return rgba.new(r,g,b,a):toHsv() end
 end
 
