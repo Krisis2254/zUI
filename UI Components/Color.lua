@@ -9,6 +9,9 @@ math.round = function(a)
     end
 end
 
+colorbase = {}
+    colorbase.__index = colorbase
+    setmetatable(colorbase, {__call = function(_,...) return colorbase.new(...) end})
 rgb = {}
     rgb.__index = rgb
     setmetatable(rgb, {__index = colorbase, __call = function(_,...) return rgb.new(...) end})
@@ -24,9 +27,6 @@ hsl = {}
 hsv = {}
     hsv.__index = hsv
     setmetatable(hsv, {__index = colorbase, __call = function(_,...) return hsv.new(...) end})
-colorbase = {}
-    colorbase.__index = colorbase
-    setmetatable(colorbase, {__call = function(_,...) return colorbase.new(...) end})
 
 --Color Base
 function colorbase.new(color, type)
@@ -144,6 +144,35 @@ function colorbase:unpack()
     end
 end
 
+function colorbase:shade(percent)
+    local t = self.type
+    self=self:toHsv()
+    self.v=self.v+percent self.v=self.v>1 and 1 or self.v self.v=self.v<0 and 0 or self.v
+    if t=="rgb" then return self:toRGB() elseif t=="rgba" then return self:toRGBA() elseif t=="hex" then return self:toHex() elseif t=="hsl" then return self:toHsl() elseif t=="hsv" then return self end
+end
+
+function colorbase:hueshift(degrees)
+    local t = self.type
+    self=self:toHsv()
+    self.h=self.h*360
+    self.h=self.h+degrees
+    self.h = (self.h+360)%360
+    self.h=self.h/360
+    if t=="rgb" then return self:toRGB() elseif t=="rgba" then return self:toRGBA() elseif t=="hex" then return self:toHex() elseif t=="hsl" then return self:toHsl() elseif t=="hsv" then return self end
+end
+
+function colorbase:mix(color,amount)
+    local c1 = self:toRGBA()
+    local c2 = color:toRGBA()
+    local r,g,b,a = 0,0,0,0
+    local t = self.type
+    r = math.sqrt( (1-amount)*(c1.r^2)+(amount*(c2.r^2)) )
+    g = math.sqrt( (1-amount)*(c1.g^2)+(amount*(c2.g^2)) )
+    b = math.sqrt( (1-amount)*(c1.b^2)+(amount*(c2.b^2)) )
+    a = (1-amount)*a+amount*b
+    if t=="rgb" then return rgb.new(r,g,b) elseif t=="rgba" then return rgba.new(r,g,b,a) elseif t=="hex" then return rgba.new(r,g,b,a):toHex() elseif t=="hsl" then rgba.new(r,g,b,a):toHsl() elseif t=="hsv" then return rgba.new(r,g,b,a):toHsv() end
+end
+
 --RGB
 function rgb.new(r, g, b)
     local base = {
@@ -152,7 +181,11 @@ function rgb.new(r, g, b)
         b = b or 0,
         type = "rgb"
     }
-    return setmetatable(base, colorbase)
+    return setmetatable(base, rgb)
+end
+
+function rgb.__tostring(c)
+    return "("..tostring(c.r)..", "..tostring(c.g)..", "..tostring(c.b)..")"
 end
 
 --RGBA
@@ -164,7 +197,11 @@ function rgba.new(r, g, b, a)
         a = a or 0,
         type = "rgba"
     }
-    return setmetatable(base, colorbase)
+    return setmetatable(base, rgba)
+end
+
+function rgba.__tostring(c)
+    return "("..tostring(c.r)..", "..tostring(c.g)..", "..tostring(c.b)..", "..tostring(c.a)..")"
 end
 
 --Hex
@@ -177,7 +214,11 @@ function hex.new(hex,a)
         a = a,
         type = "hex"
     }
-    return setmetatable(base, colorbase)
+    return setmetatable(base, hex)
+end
+
+function hex.__tostring(c)
+    return "("..c.hex..", "..tostring(c.a)..")"
 end
 
 --HSL
@@ -189,7 +230,11 @@ function hsl.new(h,s,l,a)
         a = a or 0,
         type = "hsl"
     }
-    return setmetatable(base, colorbase)
+    return setmetatable(base, hsl)
+end
+
+function hsl.__tostring(t)
+    return "("..tostring(c.h)..", "..tostring(c.s)..", "..tostring(c.l)..", "..tostring(c.a)..")"
 end
 
 function hsv.new(h,s,v,a)
@@ -200,7 +245,11 @@ function hsv.new(h,s,v,a)
         a = a or 0,
         type = "hsv"
     }
-    return setmetatable(base, colorbase)
+    return setmetatable(base, hsv)
+end
+
+function hsv.__tostring(t)
+    return "("..tostring(c.h)..", "..tostring(c.s)..", "..tostring(c.v)..", "..tostring(c.a)..")"
 end
 
 function rgbToHsl(r,g,b,a)
