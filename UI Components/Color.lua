@@ -205,13 +205,13 @@ function rgba.__tostring(c)
 end
 
 --Hex
-function hex.new(hex,a)
+function hex.new(hex, a)
     hex = string.lower(hex)
     local base = {
         r = string.sub(hex, 1, 2) or "00",
         g = string.sub(hex, 3, 4) or "00",
         b = string.sub(hex, 5, 6) or "00",
-        a = a,
+        a = a or 0,
         type = "hex"
     }
     return setmetatable(base, hex)

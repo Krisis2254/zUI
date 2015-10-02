@@ -53,6 +53,7 @@ function Container:draw()
 end
 
 function Container:addTo(parent)
+	self.hasParent=true
 	self.parent = parent
 	if parent.type=="Container" then
 		table.insert(parent.uiComps, self)
@@ -63,7 +64,7 @@ function Container:update()
 	local flag = false
 	if self.displayed then
 		flag = true
-		if type(self.parent)==nil then
+		if self.hasParent then
 			if self.parent.displayed then
 				flag = true
 			else
@@ -73,6 +74,7 @@ function Container:update()
 	end
 
 	if flag then
+		self:preupdate()
 		self.m:update()
 		--Enter
 		if not self.entered and self.m.x>=self.x and self.m.x<=self.x+self.width and self.m.y>=self.y and self.m.y<=self.y+self.height then
@@ -124,6 +126,7 @@ function Container:update()
 			end
 		end
 	end
+	self:postupdate()
 end
 
 --Container Metamethods

@@ -6,7 +6,7 @@ setmetatable(Checkbox, { __index=BaseUI,__call = function(_,...) return Checkbox
 
 --Methods
 
-function Checkbox.new(x,y,width,height,bgColor,borderColor,checkColor,hasBg,hasBorder,checkstyle,displayed)
+function Checkbox.new(x,y,width,height,bgColor,borderColor,checkColor,hasBg,hasBorder,checkstyle,displayed,clickTime)
 	local base = BaseUI.new(x,y,width,height,bgColor,nil,borderColor,displayed)
 	base.type = "Checkbox"
 	base.hasBackground = hasBg
@@ -24,11 +24,11 @@ function Checkbox.new(x,y,width,height,bgColor,borderColor,checkColor,hasBg,hasB
 	base.onexit = function(x,y) end
 		base.onexitactive = false
 		base.exited = false
-	base.onclick = function(x,y,b) base:toggle() end --Defaults to toggling.
+	base.onclick = function(x,y,b) end --Defaults to toggling.
 		base.onclickactive = false
 	base.onhover = function(x,y) end
 		base.onhoveractive = false
-	base.ondeclick = function(x,y) end
+	base.ondeclick = function(x,y) base:toggle() end
 		base.ondeclickactive = false
 	return setmetatable(base,Checkbox)
 end
@@ -61,6 +61,7 @@ function Checkbox:draw()
 end
 
 function Checkbox:addTo(parent)
+	self.hasParent=true
 	self.parent = parent
 	if parent.type=="Container" then
 		table.insert(parent.uiComps, self)
@@ -71,7 +72,7 @@ function Checkbox:update()
 	local flag = false
 	if self.displayed then
 		flag = true
-		if type(self.parent)~=nil then
+		if hasParent then
 			if self.parent.displayed then
 				flag = true
 			else
@@ -81,6 +82,7 @@ function Checkbox:update()
 	end
 
 	if flag then
+		self:preupdate()
 		self.m:update()
 		--Enter
 		if not self.entered and self.m.x>=self.x and self.m.x<=self.x+self.width and self.m.y>=self.y and self.m.y<=self.y+self.height then
@@ -132,6 +134,7 @@ function Checkbox:update()
 			end
 		end
 	end
+	self:postupdate()
 end
 
 function Checkbox:toggle()

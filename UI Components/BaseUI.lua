@@ -23,6 +23,9 @@ function BaseUI.new(x,y,width,height,bgColor,textColor,borderColor,displayed)
 		ofx = 0,
 		ofy = 0,
 		parent = nil,
+		hasParent = false,
+		preupdate = function() end,
+		postupdate = function() end,
 		m = Mouse(false)
 	}, BaseUI)
 end

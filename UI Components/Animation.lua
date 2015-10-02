@@ -48,8 +48,10 @@ function Animation.new(path,timings,x,y,sx,sy,rot,ox,oy,bgColor,borderColor,hasB
 end
 
 function Animation:addTo(parent)
+	self.hasParent=true
 	self.parent = parent
 	for i,v in ipairs(self.imgs) do
+		self.imgs[i].hasParent=true
 		self.imgs[i].parent = parent
 	end
 	if parent.type=="Container" then
@@ -67,7 +69,7 @@ function Animation:update()
 	local flag = false
 	if self.displayed then
 		flag = true
-		if type(self.parent)~=nil then
+		if self.hasParent then
 			if self.parent.displayed then
 				flag = true
 			else
@@ -76,6 +78,7 @@ function Animation:update()
 		end
 	end
 	if flag then
+		self:preupdate()
 		self.time = self.time+love.timer.getDelta()
 		if self.time>=self.timings[self.frame] then
 			self.time = 0
@@ -149,6 +152,7 @@ function Animation:update()
 			end
 		end
 	end
+	self:postupdate()
 end
 
 function Animation.__tostring(a)
