@@ -12,7 +12,7 @@ The simplest way to use zUI is to download it, then include each file from it yo
 *Example:*
 
     ...
-    local WindowUtils = require("WindowUtils")
+    local WindowUtils = require("zUI/WindowUtils")
     local BaseUI = require("zUI/BaseUI")
     local Animation = require("zUI/Animation")
     local Checkbox = require("zUI/Checkbox")
