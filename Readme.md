@@ -1,7 +1,7 @@
 # zUI
-A Löve2D GUI Engine.
+
+A GUI engine made for Löve2D!
 
 # Information
 * *Object-Oriented*
 * *Simple, Customizable*
-* DERP IDK
