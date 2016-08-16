@@ -23,10 +23,14 @@ The simplest way to use zUI is to download it, then include each file from it yo
     local TextField = require("zUI/TextField")
     local TextLabel = require("zUI/TextLabel")
     local Vec2 = require("zUI/Vec2")
+    local Vec3 = require("zUI/Vec3")
+    local beholder = require("zUI/beholder")
     ...
 
 *Remember to unpack() Color.lua!*
 
 # Notes
 
-* By default, WindowUtils uses the [GitHub's Octicon ](https://octicons.github.com/) font for close buttons, and [beholder.lua](https://github.com/kikito/beholder.lua) for text input.
+* By default, WindowUtils uses the [GitHub's Octicon](https://octicons.github.com/) font for close buttons, and [beholder.lua](https://github.com/kikito/beholder.lua) for text input.
+
+* The Mouse and Hex files aren't really meant to be used, other than internally, but you *could* use Hex I suppose.
