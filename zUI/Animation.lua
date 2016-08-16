@@ -77,17 +77,18 @@ function Animation:updateFrames()
 end
 
 function Animation:update()
-	self:preupdate()
 	if self:isDisplayed() then
+		self.preupdate()
 		self.m:update()
+		self:postmouseupdate()
 		self:updateFrames()
 		self:calculatePosition()
 		self:updateEntering()
 		self:updateExiting()
 		self:updateHovering()
 		self:updateClicking()
+		self:postupdate()
 	end
-	self:postupdate()
 end
 
 function Animation.__tostring(a)

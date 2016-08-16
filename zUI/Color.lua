@@ -35,6 +35,20 @@ function colorbase.new(color, type)
     return rgba.new(0, 0, 0, 0)
 end
 
+function colorbase:copy()
+    if self.type == "rgb" then
+        return rgb.new(self.r, self.g, self.b)
+    elseif self.type == "rgba" then
+        return rgba.new(self.r, self.g, self.b, self.a)
+    elseif self.type == "hex" then
+        return hex.new(self.hex, self.a)
+    elseif self.type == "hsl" then
+        return hsl.new(self.h, self.s, self.l, self.a)
+    elseif self.type == "hsv" then
+        return hsv.new(self.h, self.s, self.v, self.a)
+    end
+end
+
 function colorbase:toRGB()
     if self.type == "rgb" then
         return self
@@ -138,7 +152,7 @@ end
 function colorbase:shade(percent)
     local t = self.type
     c = self:toHSV()
-    c = Vec2.clampnum(c.v, 0, 1)
+    c.v = Vec2.clampnum(c.v + percent, 0, 1)
     if t == "rgb" then return c:toRGB() elseif t == "rgba" then return c:toRGBA() elseif t == "hex" then return c:toHex() elseif t == "hsl" then return c:toHSL() elseif t == "hsv" then return c end
 end
 
@@ -207,7 +221,7 @@ function hex.__tostring(c)
     return "("..c.hex..", "..tostring(c.a)..")"
 end
 
-function hsl.new(h,s,l,a)
+function hsl.new(h, s, l, a)
     local base = {
         h = h or 0,
         s = s or 0,
@@ -222,7 +236,7 @@ function hsl.__tostring(t)
     return "("..tostring(c.h)..", "..tostring(c.s)..", "..tostring(c.l)..", "..tostring(c.a)..")"
 end
 
-function hsv.new(h,s,v,a)
+function hsv.new(h, s, v, a)
     local base = {
         h = h or 0,
         s = s or 0,

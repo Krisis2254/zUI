@@ -2,7 +2,7 @@ local BaseUI = require("zUI/BaseUI")
 
 local Container = {}
 Container.__index = Container
-setmetatable(Container, { __index=BaseUI, __call = function(_, ...) return Container.new(...) end })
+setmetatable(Container, { __index = BaseUI, __call = function(_, ...) return Container.new(...) end })
 
 function Container.new(x, y, z, width, height, bgColor, borderColor, displayed, cornerRadius)
 	local base = BaseUI.new(x, y, z, width, height, bgColor, nil, borderColor, displayed, cornerRadius)

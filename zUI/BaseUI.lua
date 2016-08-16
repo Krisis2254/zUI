@@ -14,23 +14,24 @@ function BaseUI.new(x, y, z, width, height, bgColor, textColor, borderColor, dis
 		dim = Vec2(width or 0, height or 0),
 		origin = Vec3(x or 0, y or 0, z or 0),
 		offset = Vec3(0, 0, 0),
-		bgColor = bgColor,
-		textColor = textColor,
-		borderColor = borderColor,
+		bgColor = bgColor and bgColor:copy() or nil,
+		textColor = textColor and textColor:copy() or nil,
+		borderColor = borderColor and borderColor:copy() or nil,
 		displayed = displayed or false,
 		parent = nil,
 		type = "BaseUI",
 		clicked = false,
 		cornerRadius = cornerRadius or 0,
 		preupdate = function(self) end,
+		postmouseupdate = function(self) end,
 		postupdate = function(self) end,
-		onenter = function(x, y) end,
+		onenter = function(self, x, y) end,
 			entered = false,
-		onexit = function(x, y) end,
+		onexit = function(self, x, y) end,
 			exited = false,
-		onhover = function(x, y) end,
-		onclick = function(x, y, b) end,
-		ondeclick = function(x, y) end,
+		onhover = function(self, x, y) end,
+		onclick = function(self, x, y, b) end,
+		ondeclick = function(self, x, y) end,
 		m = Mouse(false)
 	}, BaseUI)
 end
@@ -100,16 +101,17 @@ function BaseUI:updateClicking()
 end
 
 function BaseUI:update()
-	self:preupdate()
 	if self:isDisplayed() then
+		self.preupdate()
 		self.m:update()
+		self:postmouseupdate()
 		self:calculatePosition()
 		self:updateEntering()
 		self:updateExiting()
 		self:updateHovering()
 		self:updateClicking()
+		self:postupdate()
 	end
-	self:postupdate()
 end
 
 function BaseUI:draw()
@@ -146,9 +148,6 @@ function BaseUI.drawEvents()
 end
 
 function BaseUI:move(nx, ny, nz, relative)
-	if not nx then nx = self.origin.x end
-	if not ny then ny = self.origin.y end
-	if not nz then nz = self.origin.z end
 	if not relative then
 		self.origin = Vec3(nx, ny, nz)
 	else
@@ -162,11 +161,11 @@ function BaseUI:changeText(newtext)
 		self.fontdata.size.x = self.fontdata.font:getWidth(self.text)
 		self.fontdata.size.y = self.fontdata.font:getHeight()
 		if self.autofitW then
-			self.dim.x = self.fontData.font:getWidth(self.text)
+			self.dim.x = self.fontdata.font:getWidth(self.text)
 		end
 
 		if self.autofitH then
-			self.dim.y = self.fontData.font:getHeight()
+			self.dim.y = self.fontdata.font:getHeight()
 		end
 	end
 end

@@ -35,9 +35,10 @@ function TextField.new(x, y, z, width, height, centered, cursorTime, displayCurs
 end
 
 function TextField:update()
-	self:preupdate()
 	if self:isDisplayed() then
+		self.preupdate()
 		self.m:update()
+		self:postmouseupdate()
 		self:calculatePosition()
 		self:updateEntering()
 		self:updateExiting()
@@ -50,8 +51,8 @@ function TextField:update()
 			self.currentTime = 0
 			self.cursorOn = false
 		end
+		self:postupdate()
 	end
-	self:postupdate()
 end
 
 function TextField:draw()
