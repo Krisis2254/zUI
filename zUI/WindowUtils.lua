@@ -2,7 +2,7 @@ local Container = require("zUI/Container")
 local MaterialDesignPalettes = require("zUI/MaterialDesignPalettes")
 local TextField = require("zUI/TextField")
 local TextLabel = require("zUI/TextLabel")
-local beholder = require("beholder")
+local beholder = require("zUI/beholder")
 local octicon_font = love.filesystem.exists("zUI/octicons-local.ttf") and love.graphics.newFont("zUI/octicons-local.ttf", 16) or love.graphics.getFont()
 	local octicon_loaded = love.filesystem.exists("zUI/octicons-local.ttf")
 
