@@ -1,39 +1,41 @@
-Mouse = {}
+local Vec2 = require("zUI/Vec2")
+
+local Mouse = {}
 Mouse.__index = Mouse
-setmetatable(Mouse, {__call = function(_,...) return Mouse.new(...) end})
+setmetatable(Mouse, { __call = function(_,...) return Mouse.new(...) end })
 
 function Mouse.new(continuous)
-	return setmetatable({x = -1, y = -1, b = "n", c = continuous or false, clicked = false}, Mouse)
+	return setmetatable( { pos = Vec2(0, 0), b = -1, c = continuous or false, clicked = false }, Mouse)
 end
 
 --Functions
 
 function Mouse:update()
-	self.x, self.y = love.mouse.getPosition()
+	self.pos = Vec2(love.mouse.getX(), love.mouse.getY())
 
 	if self.c then
-		if love.mouse.isDown("l") then 
-			self.b = "l"
+		if love.mouse.isDown(1) then
+			self.b = 1
 			self.clicked = true
-		elseif love.mouse.isDown("r") then
-			self.b = "r"
+		elseif love.mouse.isDown(2) then
+			self.b = 2
 			self.clicked = true
 		else
-			self.b = "n"
+			self.b = -1
 			self.clicked = false
 		end
 	else
 		if self.clicked then
-			self.b = "n"
-			if love.mouse.isDown("l") or love.mouse.isDown("r") then else
+			self.b = -1
+			if love.mouse.isDown(1) or love.mouse.isDown(2) then else
 				self.clicked = false
 			end
 		else
-			if love.mouse.isDown("l") or love.mouse.isDown("r") then
-				if love.mouse.isDown("l") then self.b = "l" else self.b = "r" end
+			if love.mouse.isDown(1) or love.mouse.isDown(2) then
+				if love.mouse.isDown(1) then self.b = 1 else self.b = 1 end
 				self.clicked = true
 			else
-				self.b = "n"
+				self.b = -1
 			end
 		end
 	end
@@ -42,5 +44,7 @@ end
 --Metafunctions
 
 function Mouse.__tostring(a)
-	return "("..a.x..", "..a.y..", "..a.b..")"
+	return "("..a.pos.x..", "..a.pos.y..", "..a.b..")"
 end
+
+return Mouse

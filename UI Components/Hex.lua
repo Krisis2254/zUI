@@ -1,12 +1,12 @@
-function tohex(num)
+local Hex = {}
+
+function Hex.toHexadecimal(num)
 	local div = num
 	local hex = ""
 	local mod = 0
-
 	while div>=16 do
 		mod = div%16
 		div = math.floor(div/16)
-
 		if mod==10 then
 			hex = hex..'a'
 		elseif mod==11 then
@@ -38,17 +38,14 @@ function tohex(num)
 	else
 		hex = hex..tostring(div)
 	end
-
 	return string.reverse(hex)
-
 end
 
-function todec(hex)
+function Hex.toDecimal(hex)
 	local dec = 0
-	local power = 0
-	local cHex = ''
-
-	while power<#hex do
+	local cHex = ""
+	hex = string.lower(hex)
+	for power=0, #hex do
 		cHex = string.sub(string.reverse( hex ),power+1,power+1)
 		if cHex=='a' then
 			cHex = 10
@@ -70,3 +67,5 @@ function todec(hex)
 	end
 	return dec
 end
+
+return Hex

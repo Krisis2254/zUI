@@ -1,138 +1,53 @@
-require("zUI/BaseUI")
-require("zUI/Color")
-Image = {}
-Image.__index = Image
-setmetatable(Image, {__index = BaseUI,__call = function(_,...) return Image.new(...) end})
+local BaseUI = require("zUI/BaseUI")
+local Vec2 = require("zUI/Vec2")
 
-function Image.new(path,x,y,sx,sy,rot,ox,oy,bgColor,borderColor,hasBg,hasBorder,displayed,clickTime)
-	local img = love.graphics.newImage(path)
-		img:setFilter("nearest","nearest")
-	local base = BaseUI.new(x,y,img:getWidth(),img:getHeight(),bgColor,nil,borderColor,displayed)
+local Image = {}
+Image.__index = Image
+setmetatable(Image, { __index = BaseUI, __call = function(_, ...) return Image.new(...) end })
+
+function Image.new(texture, x, y, z, sx, sy, rot, ox, oy, bgColor, borderColor, displayed, quad)
+	local img
+	if type(texture) == "string" then
+		img = love.graphics.newImage(texture)
+		img:setFilter("nearest", "nearest")
+	else
+		img = texture
+	end
+
+	local base = BaseUI.new(x, y, z, img:getWidth(), img:getHeight(), bgColor, nil, borderColor, displayed)
 	base.img = img
-	base.path = base.path
-	base.hasBackground = hasBg or false
-	base.hasBorder = hasBorder or false
-	base.iox = ox or 0
-	base.ioy = oy or 0
-	base.sx = sx or 1
-	base.sy = sy or 1
+	base.path = type(texture) == "string" and texture or "UNKNOWN"
+	base.image_origin = Vec2(ox or 0, oy or 0)
+	base.scale = Vec2(sx or 1, sy or 1)
 	base.rot = rot or 0
 	base.type = "Image"
-	base.clicked = false
-	base.clickTime = clickTime
-	base.curTime = 0
-		--Event Vars
-	base.onenter = function(x,y) end
-		base.onenteractive = false
-		base.entered = false
-	base.onexit = function(x,y) end
-		base.onexitactive = false
-		base.exited = false
-	base.onclick = function(x,y,b) end
-		base.onclickactive = false
-	base.onhover = function(x,y) end
-		base.onhoveractive = false
-	base.ondeclick = function(x,y) end
-		base.ondeclickactive = false
+	base.quad = quad or love.graphics.newQuad(0, 0, base.img:getWidth(), base.img:getHeight(), base.img:getWidth(), base.img:getHeight())
 	return setmetatable(base, Image)
 end
 
 function Image:draw()
-	if self.displayed then
-		if self.parent~=nil then
-			if self.parent.type=="Container" and self.parent.displayed then self.ofx,self.ofy = self.parent.x, self.parent.y  else
-				self.ofx,self.ofy = 0,0
+	if self:isDisplayed() then
+		love.graphics.push()
+
+			if self.bgColor then
+				love.graphics.setColor(self.bgColor:toRGBA():unpack())
+				love.graphics.rectangle("fill", self.pos.x, self.pos.y, self.dim.x, self.dim.y, self.cornerRadius, self.cornerRadius)
 			end
-		end
-		self.x=self.ox+self.ofx self.y=self.oy+self.ofy
-		if self.hasBackground then
-		love.graphics.setColor(self.bgColor:toRGBA():unpack())
-			love.graphics.polygon("fill",self.x,self.y,self.x+(self.width*self.sx),self.y,self.x+(self.width*self.sx),self.y+(self.height*self.sy),self.x,self.y+(self.height*self.sy))
-		end if self.hasBorder then
-		love.graphics.setColor(self.borderColor:toRGBA():unpack())
-			love.graphics.polygon("line",self.x,self.y,self.x+(self.width*self.sx),self.y,self.x+(self.width*self.sx),self.y+(self.height*self.sy),self.x,self.y+(self.height*self.sy))
-		end
-		love.graphics.setColor(255,255,255,255)
-		love.graphics.draw(self.img,self.x,self.y,self.rot,self.sx,self.sy,self.iox,self.ioy,0,0)
+
+			if self.borderColor then
+				love.graphics.setColor(self.borderColor:toRGBA():unpack())
+				love.graphics.rectangle("line", self.pos.x, self.pos.y, self.dim.x, self.dim.y, self.cornerRadius, self.cornerRadius)
+			end
+
+			love.graphics.setColor(255,255,255,255)
+			love.graphics.draw(self.img, self.quad, self.pos.x, self.pos.y, self.rot, self.scale.x, self.scale.y, self.image_origin.x, self.image_origin.y, 0, 0)
+
+		love.graphics.pop()
 	end
 end
-
-function Image:addTo(parent)
-	self.hasParent=true
-	self.parent = parent
-	if parent.type=="Container" then
-		table.insert(parent.uiComps, self)
-	end
-end
-
-function Image:update()
-	local flag = false
-	if self.displayed then
-		flag = true
-		if self.hasParent then
-			if self.parent.displayed then
-				flag = true
-			else
-				flag = false
-			end
-		end
-	end
-
-	if flag then
-		self:preupdate()
-		self.m:update()
-		--Enter
-		if not self.entered and self.m.x>=self.x and self.m.x<=self.x+(self.width*self.sx) and self.m.y>=self.y and self.m.y<=self.y+(self.height*self.sy) then
-			self.entered = true
-			if self.onenteractive then
-				self.onenter(self.m.x,self.m.y)
-			end
-		elseif self.entered then
-			if self.m.x<self.x or self.m.x>self.x+(self.width*self.sx) or self.m.y<self.y or self.m.y>self.y+(self.height*self.sy) then
-				self.entered = false
-			end
-		end
-		--Exit
-		if not self.exited then
-			if self.m.x<self.x or self.m.x>self.x+(self.width*self.sx) or self.m.y<self.y or self.m.y>self.y+(self.height*self.sy) then
-				self.exited = true
-				if self.onexitactive then
-					self.onexit(self.m.x,self.m.y)
-				end
-			end
-		elseif self.exited and self.m.x>=self.x and self.m.x<=self.x+(self.width*self.sx) and self.m.y>=self.y and self.m.y<=self.y+(self.height*self.sy) then
-			self.exited = false
-		end
-		--Hover
-		if self.m.x>=self.x and self.m.x<=self.x+(self.width*self.sx) and self.m.y>=self.y and self.m.y<=self.y+(self.height*self.sy) then
-			if self.onhoveractive then
-				self.onhover(self.m.x,self.m.y)
-			end
-		end
-		--Click
-		if self.clicked then
-			self.curTime = self.curTime+love.timer.getDelta()
-			if self.curTime>=self.clickTime then
-				self.curTime = 0
-				self.clicked = false
-				if self.ondeclickactive then
-					self.ondeclick(self.m.x,self.m.y)
-				end
-			end
-		end
-		if self.m.b~="n" and self.m.clicked and self.m.x>=self.x and self.m.x<=self.x+(self.width*self.sx) and self.m.y>=self.y and self.m.y<=self.y+(self.height*self.sy) then
-			self.clicked = true
-			self.curTime = 0
-			if self.onclickactive then
-				self.onclick(self.m.x,self.m.y,self.m.b)
-			end
-		end
-	end
-	self:postupdate()
-end
-
---Metamethods
 
 function Image.__tostring(i)
 	return i.path
 end
+
+return Image
