@@ -35,4 +35,4 @@ The simplest way to use zUI is to download it, then include each file from it yo
 
 * The Mouse and Hex files aren't really meant to be used, other than internally, but you *could* use Hex I suppose.
 
-* This is license under the MIT license, so try not to lose the license file. :simple_smile:
+* This is license under the MIT license, so try not to lose the license file. :smile:
