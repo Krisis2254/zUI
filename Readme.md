@@ -1,6 +1,6 @@
 # zUI
 
-A GUI engine made for Löve2D!
+A GUI engine made in Lua for Löve2D!
 
 # Information
 * *Object-Oriented*
