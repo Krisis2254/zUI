@@ -3,8 +3,9 @@ local MaterialDesignPalettes = require("zUI/MaterialDesignPalettes")
 local TextField = require("zUI/TextField")
 local TextLabel = require("zUI/TextLabel")
 local beholder = require("zUI/beholder")
-local octicon_font = love.filesystem.exists("zUI/octicons-local.ttf") and love.graphics.newFont("zUI/octicons-local.ttf", 16) or love.graphics.getFont()
-	local octicon_loaded = love.filesystem.exists("zUI/octicons-local.ttf")
+local iconpath = "zUI/FontAwesome.otf"
+local fontawesome = love.filesystem.exists(iconpath) and love.graphics.newFont(iconpath, 18) or love.graphics.getFont()
+	local fontawesome_loaded = love.filesystem.exists(iconpath)
 
 local WindowUtils = {}
 	WindowUtils.open_windows = {}
@@ -40,7 +41,7 @@ function WindowUtils.createMsgBox(id, x, y, z, width, height, cCornerRadius, bCo
 	end
 	local text = opt_label or TextLabel((width - font:getWidth(msg)) / 2, (height - font:getHeight()) / 2, 0, nil, nil, msg, false, font, nil, textColor, nil, true)
 		text:addTo(container)
-	local close = opt_button or TextLabel(width - octicon_font:getWidth(octicon_loaded and "" or "X") * 5/2, 0, 0, octicon_font:getWidth(octicon_loaded and "" or "X") * 5/2, octicon_font:getHeight() * 5/4, octicon_loaded and "" or "X", true, octicon_font, MaterialDesignPalettes.palette_red.pri.s700, MaterialDesignPalettes.palette_red.pri.s50, MaterialDesignPalettes.palette_red.pri.s700, true, bCornerRadius)
+	local close = opt_button or TextLabel(width - fontawesome:getWidth(fontawesome_loaded and "" or "X") * 3/2, 0, 0, fontawesome:getWidth(fontawesome_loaded and "" or "X") * 3/2, (fontawesome:getBaseline() - fontawesome:getHeight() + fontawesome:getAscent()) * 7/5, fontawesome_loaded and "" or "X", true, fontawesome, MaterialDesignPalettes.palette_red.pri.s700, MaterialDesignPalettes.palette_red.pri.s50, MaterialDesignPalettes.palette_red.pri.s700, true, bCornerRadius)
 		if not opt_button then
 			close:addTo(container)
 			close.bgColor.a = 0
@@ -91,9 +92,9 @@ function WindowUtils.createPrompt(id, x, y, z, width, height, cCornerRadius, bCo
 				end
 			end
 		end
-	local title = opt_label or TextLabel(0, octicon_font:getHeight() * 5/8 - font:getHeight() / 2, 0, nil, nil, title, false, font, nil, textColor, nil, true, tCornerRadius)
+	local title = opt_label or TextLabel(0, fontawesome:getHeight() * 5/8 - font:getHeight() / 2, 0, nil, nil, title, false, font, nil, textColor, nil, true, tCornerRadius)
 		title:addTo(container)
-	local close = opt_button or TextLabel(width - octicon_font:getWidth(octicon_loaded and "" or "X") * 5/2, 0, 0, octicon_font:getWidth(octicon_loaded and "" or "X") * 5/2, octicon_font:getHeight() * 5/4, octicon_loaded and "" or "X", true, octicon_font, MaterialDesignPalettes.palette_red.pri.s700, MaterialDesignPalettes.palette_red.pri.s50, MaterialDesignPalettes.palette_red.pri.s700, true, bCornerRadius)
+	local close = opt_button or TextLabel(width - fontawesome:getWidth(fontawesome_loaded and "" or "X") * 3/2, 0, 0, fontawesome:getWidth(fontawesome_loaded and "" or "X") * 3/2, (fontawesome:getBaseline() - fontawesome:getHeight() + fontawesome:getAscent()) * 7/5, fontawesome_loaded and "" or "X", true, fontawesome, MaterialDesignPalettes.palette_red.pri.s700, MaterialDesignPalettes.palette_red.pri.s50, MaterialDesignPalettes.palette_red.pri.s700, true, bCornerRadius)
 		close:addTo(container)
 		if not opt_button then
 			close.bgColor.a = 0
@@ -174,7 +175,7 @@ function WindowUtils.createPrompt(id, x, y, z, width, height, cCornerRadius, bCo
 				end
 			end
 		end
-	if WindowUtils.open_windows[id]==nil then
+	if not WindowUtils.open_windows[id] then
 		WindowUtils.open_windows[id] = container
 	end
 end
@@ -216,7 +217,7 @@ function WindowUtils.createPopup(id, x, y, z, width, height, cCornerRadius, msg,
 	end
 	local text = opt_label or TextLabel((width - font:getWidth(msg)) / 2, (height - font:getHeight()) / 2, 0, nil, nil, msg, false, font, nil, textColor, nil, true)
 	text:addTo(container)
-	if WindowUtils.open_windows[id]==nil then
+	if not WindowUtils.open_windows[id] then
 		WindowUtils.open_windows[id] = container
 	end
 end
