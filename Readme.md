@@ -33,6 +33,6 @@ The simplest way to use zUI is to download it, then include each file from it yo
 
 * By default, WindowUtils uses [Font Awesome](http://www.fontawesome.io) for close buttons, and [beholder.lua](https://github.com/kikito/beholder.lua) for text input.
 
-* The Mouse and Hex files aren't really meant to be used, other than internally, but you *could* use Hex I suppose.
+* The Mouse and Hex files aren't really meant to be used—other than internally—but you *could* use Hex I suppose.
 
 * This is licensed under the MIT license, so try not to lose the license file. :smile:
