@@ -79,8 +79,8 @@ function TextField:draw()
 				end
 			love.graphics.setFont(tempfont)
 			if self.cursorOn and self.displayCursor then
-				love.graphics.setLineStyle("rough")
-					love.graphics.line(self.pos.x + self.fontdata.size.x + 1, self.pos.y + 1, self.pos.x + self.fontdata.size.x + 1, self.pos.y + self.dim.y - 1)
+				love.graphics.setLineStyle("rough") --FIX THIS
+					love.graphics.line((self.fontdata.size.x % self.dim.x) + self.pos.x + 1, self.pos.y + (self.dim.y * (math.floor(self.fontdata.size.x / self.dim.x))) + 1, (self.fontdata.size.x % self.dim.x) + self.pos.x + 1, self.pos.y + self.dim.y + (self.dim.y * (math.floor(self.fontdata.size.x / self.dim.x))) - 1)
 				love.graphics.setLineStyle("smooth")
 			end
 		love.graphics.pop()

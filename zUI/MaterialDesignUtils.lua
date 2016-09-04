@@ -19,6 +19,11 @@ local palettes = {}
     palettes.palette_brown = {}
     palettes.palette_grey = {}
     palettes.palette_bgrey = {}
+local easing_curves = {}
+    easing_curves.std_curve = love.math.newBezierCurve(0, 0, 0.4, 0, 0.2, 1, 1, 1)
+    easing_curves.decel_curve = love.math.newBezierCurve(0, 0, 0, 0, 0.2, 1, 1, 1)
+    easing_curves.accel_curve = love.math.newBezierCurve(0, 0, 0.4, 0, 1, 1, 1, 1)
+    easing_curves.sharp_curve = love.math.newBezierCurve(0, 0, 0.4, 0, 0.6, 1, 1, 1)
 
 palettes.palette_indigo.pri = {}
 palettes.palette_indigo.pri.s50 = rgba(233, 234, 246, 255)
@@ -385,4 +390,6 @@ palettes.palette_bgrey.text = {}
 palettes.palette_bgrey.text.s1 = rgba(35, 35, 35, 255)
 palettes.palette_bgrey.text.s2 = rgba(235, 235, 235, 255)
 
-return palettes
+local MaterialDesignUtils = { palettes = palettes, easing_curves = easing_curves }
+
+return MaterialDesignUtils
