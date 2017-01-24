@@ -167,4 +167,8 @@ function Vec3:clamp(min, max)
     return Vec3.new(Vec3.clampnum(self.x, xmin, xmax), Vec3.clampnum(self.y, ymin, ymax), Vec3.clampnum(self.z, zmin, zmax))
 end
 
+function Vec3:unpack()
+    return self.x, self.y, self.z
+end
+
 return Vec3

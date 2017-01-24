@@ -10,8 +10,8 @@ local fontawesome = love.filesystem.exists(iconpath) and love.graphics.newFont(i
 local WindowUtils = {}
 	WindowUtils.open_windows = {}
 
-function WindowUtils.createMsgBox(id, x, y, z, width, height, cCornerRadius, bCornerRadius, msg, font, bgColor, textColor, borderColor, opt_container, opt_label, opt_close )
-	local container = opt_container or Container(x, y, z, width, height, bgColor, borderColor, true, cCornerRadius)
+function WindowUtils.createMsgBox(id, x, y, z, width, height, cCornerRadius, bCornerRadius, msg, font, bgColor, textColor, borderColor, opt_container, opt_label, opt_close, shadowDisplayed)
+	local container = opt_container or Container(x, y, z, width, height, bgColor, borderColor, true, cCornerRadius, shadowDisplayed)
 	container.windowID = id or "BLANK"
 	container.creationtime = 0
 	container.creationprog = 0
@@ -66,8 +66,8 @@ function WindowUtils.createMsgBox(id, x, y, z, width, height, cCornerRadius, bCo
 	end
 end
 
-function WindowUtils.createPrompt(id, x, y, z, width, height, cCornerRadius, bCornerRadius, tCornerRadius, title, font, bgColor, textColor, borderColor, inputBG, inputBorder, enterCond, func, opt_container, opt_label, opt_close, opt_input)
-	local container = opt_container or Container(x, y, z, width, height, bgColor, borderColor, true, cCornerRadius)
+function WindowUtils.createPrompt(id, x, y, z, width, height, cCornerRadius, bCornerRadius, tCornerRadius, title, font, bgColor, textColor, borderColor, inputBG, inputBorder, enterCond, func, opt_container, opt_label, opt_close, opt_input, shadowDisplayed)
+	local container = opt_container or Container(x, y, z, width, height, bgColor, borderColor, true, cCornerRadius, shadowDisplayed)
 		container.windowID = id or "BLANK"
 		if not opt_container then
 			container.creationtime = 0
@@ -188,8 +188,8 @@ function WindowUtils.createPrompt(id, x, y, z, width, height, cCornerRadius, bCo
 	end
 end
 
-function WindowUtils.createPopup(id, x, y, z, width, height, cCornerRadius, msg, font, bgColor, textColor, borderColor, timeOpen, opt_container, opt_label)
-	local container = opt_container or Container(x, y, z, width, height, bgColor, borderColor, true, cCornerRadius)
+function WindowUtils.createPopup(id, x, y, z, width, height, cCornerRadius, msg, font, bgColor, textColor, borderColor, timeOpen, opt_container, opt_label, shadowDisplayed)
+	local container = opt_container or Container(x, y, z, width, height, bgColor, borderColor, true, cCornerRadius, shadowDisplayed)
 	container.windowID = id or "BLANK"
 	if not opt_container then
 		container.creationtime = 0
@@ -225,7 +225,7 @@ function WindowUtils.createPopup(id, x, y, z, width, height, cCornerRadius, msg,
 			end
 		end
 	end
-	local text = opt_label or TextLabel((width - font:getWidth(msg)) / 2, (height - font:getHeight()) / 2, 0, nil, nil, msg, false, font, nil, textColor, nil, true)
+	local text = opt_label or TextLabel((width - font:getWidth(msg)) / 2, (height - font:getHeight()) / 2, 0, nil, nil, msg, false, font, nil, textColor, nil, true, 0, false)
 	text:addTo(container)
 	if not WindowUtils.open_windows[id] then
 		WindowUtils.open_windows[id] = container

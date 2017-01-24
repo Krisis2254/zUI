@@ -167,4 +167,8 @@ function Vec2:clamp(min, max)
     return Vec2.new(Vec2.clampnum(self.x, xmin, xmax), Vec2.clampnum(self.y, ymin, ymax))
 end
 
+function Vec2:unpack()
+    return self.x, self.y
+end
+
 return Vec2

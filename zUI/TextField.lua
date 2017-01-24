@@ -5,7 +5,7 @@ local TextField = {}
 TextField.__index = TextField
 setmetatable(TextField, { __index = TextLabel, __call = function(_, ...) return TextField.new(...) end })
 
-function TextField.new(x, y, z, width, height, centered, cursorTime, displayCursor, maxLength, font, bgColor, textColor, borderColor, displayed, cornerRadius)
+function TextField.new(x, y, z, width, height, centered, cursorTime, displayCursor, maxLength, font, bgColor, textColor, borderColor, displayed, cornerRadius, shadowDisplayed)
 	local _ = ""
 	maxLength = maxLength or 0
 	for i = 1, maxLength + 1 do _ = _.."0" end
@@ -25,7 +25,7 @@ function TextField.new(x, y, z, width, height, centered, cursorTime, displayCurs
 		afith = true
 	end
 
-	local base = TextLabel.new(x, y, z, width, height, "", centered, font, bgColor, textColor, borderColor, displayed, cornerRadius)
+	local base = TextLabel.new(x, y, z, width, height, "", centered, font, bgColor, textColor, borderColor, displayed, cornerRadius, shadowDisplayed)
 	base.type = "TextField"
 	base.cursorTime = cursorTime or 1
 	base.currentTime = 0
@@ -59,6 +59,23 @@ function TextField:draw()
 	if self:isDisplayed() then
 		love.graphics.push()
 			local tempfont = love.graphics.getFont()
+
+			if self.shadowDisplayed then
+				self.shadow_shader:send("border", 8 * self.pos.z)
+				self.shadow_shader:send("pos", {self.pos.x - (8 * self.pos.z) / 2, self.pos.y - (8 * self.pos.z) / 2 + 4 * self.pos.z})
+				self.shadow_shader:send("size", {self.dim.x + (8 * self.pos.z), self.dim.y + (8 * self.pos.z)})
+				love.graphics.setShader(self.shadow_shader)
+					love.graphics.setColor(0, 0, 0, 51 * (self.bgColor and self.bgColor:toRGBA().a or 255) / 255)
+					love.graphics.rectangle("fill", self.pos.x - (8 * self.pos.z) / 2, self.pos.y - (8 * self.pos.z) / 2 + 4 * self.pos.z, self.dim.x + (8 * self.pos.z), self.dim.y + (8 * self.pos.z), self.cornerRadius, self.cornerRadius)
+				love.graphics.setShader()
+				self.shadow_shader:send("border", 20 * self.pos.z)
+				self.shadow_shader:send("pos", {self.pos.x - (20 * self.pos.z) / 2, self.pos.y - (20 * self.pos.z) / 2 + 6 * self.pos.z})
+				self.shadow_shader:send("size", {self.dim.x + (20 * self.pos.z), self.dim.y + (20 * self.pos.z)})
+				love.graphics.setShader(self.shadow_shader)
+					love.graphics.setColor(0, 0, 0, 48 * (self.bgColor and self.bgColor:toRGBA().a or 255) / 255)
+					love.graphics.rectangle("fill", self.pos.x - (20 * self.pos.z) / 2, self.pos.y - (20 * self.pos.z) / 2 + 6 * self.pos.z, self.dim.x + (20 * self.pos.z), self.dim.y + (20 * self.pos.z), self.cornerRadius, self.cornerRadius)
+				love.graphics.setShader()
+			end
 
 			if self.bgColor then
 				love.graphics.setColor(self.bgColor:toRGBA():unpack())

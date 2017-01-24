@@ -5,7 +5,7 @@ local TextLabel = {}
 TextLabel.__index = TextLabel
 setmetatable(TextLabel, { __index = BaseUI, __call = function(_, ...) return TextLabel.new(...) end })
 
-function TextLabel.new(x, y, z, width, height, text, centered, font, bgColor, textColor, borderColor, displayed, cornerRadius)
+function TextLabel.new(x, y, z, width, height, text, centered, font, bgColor, textColor, borderColor, displayed, cornerRadius, shadowDisplayed)
 	font = font or love.graphics.getFont()
 	if width then
 		afitw = false
@@ -21,7 +21,7 @@ function TextLabel.new(x, y, z, width, height, text, centered, font, bgColor, te
 		afith = true
 	end
 
-	local base = BaseUI.new(x, y, z, width, height, bgColor, textColor, borderColor, displayed, cornerRadius)
+	local base = BaseUI.new(x, y, z, width, height, bgColor, textColor, borderColor, displayed, cornerRadius, shadowDisplayed)
 	base.type = "TextLabel"
 	base.text = text or ""
 	base.fontdata = {}
@@ -37,6 +37,23 @@ function TextLabel:draw()
 	if self:isDisplayed() then
 		love.graphics.push()
 			local tempfont = love.graphics.getFont()
+
+			if self.shadowDisplayed then
+				self.shadow_shader:send("border", 8 * self.pos.z)
+				self.shadow_shader:send("pos", {self.pos.x - (8 * self.pos.z) / 2, self.pos.y - (8 * self.pos.z) / 2 + 4 * self.pos.z})
+				self.shadow_shader:send("size", {self.dim.x + (8 * self.pos.z), self.dim.y + (8 * self.pos.z)})
+				love.graphics.setShader(self.shadow_shader)
+					love.graphics.setColor(0, 0, 0, 51 * (self.bgColor and self.bgColor:toRGBA().a or 255) / 255)
+					love.graphics.rectangle("fill", self.pos.x - (8 * self.pos.z) / 2, self.pos.y - (8 * self.pos.z) / 2 + 4 * self.pos.z, self.dim.x + (8 * self.pos.z), self.dim.y + (8 * self.pos.z), self.cornerRadius, self.cornerRadius)
+				love.graphics.setShader()
+				self.shadow_shader:send("border", 20 * self.pos.z)
+				self.shadow_shader:send("pos", {self.pos.x - (20 * self.pos.z) / 2, self.pos.y - (20 * self.pos.z) / 2 + 6 * self.pos.z})
+				self.shadow_shader:send("size", {self.dim.x + (20 * self.pos.z), self.dim.y + (20 * self.pos.z)})
+				love.graphics.setShader(self.shadow_shader)
+					love.graphics.setColor(0, 0, 0, 48 * (self.bgColor and self.bgColor:toRGBA().a or 255) / 255)
+					love.graphics.rectangle("fill", self.pos.x - (20 * self.pos.z) / 2, self.pos.y - (20 * self.pos.z) / 2 + 6 * self.pos.z, self.dim.x + (20 * self.pos.z), self.dim.y + (20 * self.pos.z), self.cornerRadius, self.cornerRadius)
+				love.graphics.setShader()
+			end
 
 			if self.bgColor then
 				love.graphics.setColor(self.bgColor:toRGBA():unpack())
