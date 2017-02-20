@@ -3,9 +3,9 @@ local BaseUI = require("zUI/BaseUI")
 
 local Animation = {}
 Animation.__index = Animation
-setmetatable(Animation, { __index = Image, __call=function(_, ...) return Animation.new(...) end })
+setmetatable(Animation, { __index = Image, __call = function(_, ...) return Animation.new(...) end })
 
-function Animation.new(path, timings, x, y, z, sx, sy, rot, ox, oy, bgColor, borderColor, displayed, form, textureW, textureH)
+function Animation.new(path, timings, x, y, z, sx, sy, rot, ox, oy, bgColor, borderColor, displayed, form, textureW, textureH, shadowDisplayed)
 	local imgs = {}
 	local paths = {}
 
@@ -13,7 +13,7 @@ function Animation.new(path, timings, x, y, z, sx, sy, rot, ox, oy, bgColor, bor
 		local texture = love.graphics.newImage(path)
 		for i = 0, (texture:getHeight() / textureH) - 1 do
 			for i2 = 0, (texture:getWidth() / textureW) - 1 do
-				table.insert(imgs, Image(texture, x, y, z, sx, sy, rot, ox, oy, bgColor, borderColor, displayed, love.graphics.newQuad(i2 * textureW, i * textureH, textureW, textureH, texture:getDimensions())))
+				table.insert(imgs, Image(texture, x, y, z, sx, sy, rot, ox, oy, bgColor, borderColor, displayed, love.graphics.newQuad(i2 * textureW, i * textureH, textureW, textureH, texture:getDimensions()), shadowDisplayed))
 			end
 		end
 		table.insert(paths, path)
@@ -21,7 +21,7 @@ function Animation.new(path, timings, x, y, z, sx, sy, rot, ox, oy, bgColor, bor
 		local folder = love.filesystem.getDirectoryItems(path)
 		for i, v in ipairs(folder) do
 			local file = path.."/"..v
-			table.insert(imgs, Image(file, x, y, z, sx, sy, rot, ox, oy, bgColor, borderColor, displayed))
+			table.insert(imgs, Image(file, x, y, z, sx, sy, rot, ox, oy, bgColor, borderColor, displayed, shadowDisplayed))
 			table.insert(paths, file)
 		end
 	end

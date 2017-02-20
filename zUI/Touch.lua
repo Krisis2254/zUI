@@ -1,4 +1,4 @@
-local Vec2 = require("Vec2")
+local Vec2 = require("zUI/Vec2")
 
 local Touch = {}
 Touch.__index = Touch

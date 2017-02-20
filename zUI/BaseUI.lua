@@ -8,7 +8,19 @@ setmetatable(BaseUI, { __call = function(_, ...) return BaseUI.new(...) end })
 
 BaseUI.display_events = {}
 
-function BaseUI.new(x, y, z, width, height, bgColor, textColor, borderColor, displayed, cornerRadius)
+BaseUI.shadow_shader = love.graphics.newShader([[
+    extern number border;
+    extern vec2 pos;
+    extern vec2 size;
+
+    vec4 effect(vec4 color, Image tex, vec2 texc, vec2 screenc) {
+        vec4 pixel = Texel(tex, texc);
+        pixel.a = smoothstep(0.0, border, screenc.x - pos.x) * (1.0 - smoothstep(size.x - border, size.x, screenc.x - pos.x)) * smoothstep(0.0, border, screenc.y - pos.y) * (1.0 - smoothstep(size.y - border, size.y, screenc.y - pos.y));
+        return pixel * color;
+    }
+]])
+
+function BaseUI.new(x, y, z, width, height, bgColor, textColor, borderColor, displayed, cornerRadius, shadowDisplayed)
 	return setmetatable( {
 		pos = Vec3(x or 0, y or 0, z or 0),
 		dim = Vec2(width or 0, height or 0),
@@ -18,6 +30,7 @@ function BaseUI.new(x, y, z, width, height, bgColor, textColor, borderColor, dis
 		textColor = textColor and textColor:copy() or nil,
 		borderColor = borderColor and borderColor:copy() or nil,
 		displayed = displayed or false,
+		shadowDisplayed = shadowDisplayed or false,
 		parent = nil,
 		type = "BaseUI",
 		clicked = false,
@@ -54,7 +67,7 @@ end
 function BaseUI:calculatePosition()
 	if self.parent then
 		if self.parent.type=="Container" and self.parent.displayed then
-			self.offset = self.parent.pos
+			self.offset.x, self.offset.y = self.parent.pos.x, self.parent.pos.y
 		else
 			self.offset = Vec3(0, 0, 0)
 		end
@@ -102,7 +115,7 @@ end
 
 function BaseUI:update()
 	if self:isDisplayed() then
-		self.preupdate()
+		self:preupdate()
 		self.m:update()
 		self:postmouseupdate()
 		self:calculatePosition()
@@ -117,6 +130,22 @@ end
 function BaseUI:draw()
 	if self:isDisplayed() then
 		love.graphics.push()
+			if self.shadowDisplayed then
+				self.shadow_shader:send("border", 8 * self.pos.z)
+				self.shadow_shader:send("pos", {self.pos.x - (8 * self.pos.z) / 2, self.pos.y - (8 * self.pos.z) / 2 + 4 * self.pos.z})
+				self.shadow_shader:send("size", {self.dim.x + (8 * self.pos.z), self.dim.y + (8 * self.pos.z)})
+				love.graphics.setShader(self.shadow_shader)
+					love.graphics.setColor(0, 0, 0, 51 * (self.bgColor and self.bgColor:toRGBA().a or 255) / 255)
+					love.graphics.rectangle("fill", self.pos.x - (8 * self.pos.z) / 2, self.pos.y - (8 * self.pos.z) / 2 + 4 * self.pos.z, self.dim.x + (8 * self.pos.z), self.dim.y + (8 * self.pos.z), self.cornerRadius, self.cornerRadius)
+				love.graphics.setShader()
+				self.shadow_shader:send("border", 20 * self.pos.z)
+				self.shadow_shader:send("pos", {self.pos.x - (20 * self.pos.z) / 2, self.pos.y - (20 * self.pos.z) / 2 + 6 * self.pos.z})
+				self.shadow_shader:send("size", {self.dim.x + (20 * self.pos.z), self.dim.y + (20 * self.pos.z)})
+				love.graphics.setShader(self.shadow_shader)
+					love.graphics.setColor(0, 0, 0, 48 * (self.bgColor and self.bgColor:toRGBA().a or 255) / 255)
+					love.graphics.rectangle("fill", self.pos.x - (20 * self.pos.z) / 2, self.pos.y - (20 * self.pos.z) / 2 + 6 * self.pos.z, self.dim.x + (20 * self.pos.z), self.dim.y + (20 * self.pos.z), self.cornerRadius, self.cornerRadius)
+				love.graphics.setShader()
+			end
 			if self.bgColor then
 				love.graphics.setColor(self.bgColor:toRGBA():unpack())
 				love.graphics.rectangle("fill", self.pos.x, self.pos.y, self.dim.x, self.dim.y, self.cornerRadius, self.cornerRadius)
